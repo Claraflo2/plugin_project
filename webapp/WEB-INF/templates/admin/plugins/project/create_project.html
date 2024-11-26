@@ -1,0 +1,41 @@
+<@box>
+	<@boxHeader title='#i18n{project.create_project.title}' />
+	<@boxBody>
+    <@tform name='project' action='jsp/admin/plugins/project/ManageProjects.jsp' enctype="multipart/form-data">
+
+        <@messages errors=errors />
+        <@input type="hidden" id="id" name="id"/>
+        <@input type="hidden" value="${token}" name="token" />
+
+		<@formGroup labelFor='un_entier' labelKey='#i18n{project.project.labelUnEntier}' mandatory=true>
+			<@input type='text' id='un_entier' name='un_entier'  value='${project.unEntier!\'\'}' tabIndex='0' />
+		</@formGroup>
+		<@formGroup labelFor='deux_sh' labelKey='#i18n{project.project.labelDeuxSh}' mandatory=true>
+			<@input type='text' id='deux_sh' name='deux_sh'  maxlength=50 value='${project.deuxSh!\'\'}' tabIndex='1' />
+		</@formGroup>
+		<@formGroup labelFor='trois_md' labelKey='#i18n{project.project.labelTroisMd}' mandatory=true>
+			<@input type='text' id='trois_md' name='trois_md'  maxlength=255 value='${project.troisMd!\'\'}' tabIndex='2' />
+		</@formGroup>
+		<@formGroup labelFor='quatre_lg' labelKey='#i18n{project.project.labelQuatreLg}' mandatory=true>
+			<@input type='text' id='quatre_lg' name='quatre_lg'  value='${project.quatreLg!\'\'}' tabIndex='3' />
+		</@formGroup>
+		<@formGroup labelFor='cinq_mail' labelKey='#i18n{project.project.labelCinqMail}' mandatory=true>
+			<@input type='text' id='cinq_mail' name='cinq_mail'  maxlength=255 value='${project.cinqMail!\'\'}' tabIndex='4' />
+		</@formGroup>
+		<@formGroup labelFor='six_url' labelKey='#i18n{project.project.labelSixUrl}' mandatory=true>
+			<@input type='text' id='six_url' name='six_url'  maxlength=255 value='${project.sixUrl!\'\'}' tabIndex='5' />
+		</@formGroup>
+		<@formGroup labelFor='sept_date' labelKey='#i18n{project.project.labelSeptDate}' mandatory=true>
+          	<@input type='date' id='sept_date' name='sept_date'  value=project.septDate!'' tabIndex='6' />
+		</@formGroup>
+		<@formGroup labelFor='huit_b' labelKey='#i18n{project.project.labelHuitB}' mandatory=true>
+          	<@checkBox id="huit_b" name="huit_b"  value="1" checked=project.huitB!'false' tabIndex='7' />
+		</@formGroup>
+		<@formGroup labelFor='neuf_file' labelKey='#i18n{project.project.labelNeufFile}' mandatory=true>
+          	<@input type='file' id='neuf_file' name='neuf_file'  maxlength=50 value='${project.neufFile!\'\'}' tabIndex='8' />
+		</@formGroup>
+				
+		<@actionButtons button1Name="action_createProject" button2Name="view_manageProject"/>
+    </@tform>
+	</@boxBody>
+</@box>

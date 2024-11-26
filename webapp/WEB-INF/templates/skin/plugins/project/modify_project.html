@@ -1,0 +1,46 @@
+
+<@box>
+	<@boxHeader title='#i18n{project.modify_project.title}' />
+	<@boxBody>
+		<@tform class='form-horizontal' action='jsp/site/Portal.jsp' enctype="multipart/form-data">
+				<@messages errors=errors />
+				<@input type="hidden" id="id" name="id" value="${project.id}"/>
+				<@input type="hidden" value="${token}" name="token" />
+				<@input type="hidden" name="page" value="project" /> 
+
+				<@formGroup labelFor='un_entier' labelKey='#i18n{project.project.labelUnEntier}' mandatory=true>
+					<@input type="text" id="un_entier" name="un_entier" value="${project.unEntier!''}"  tabIndex="1" />
+				</@formGroup>
+				<@formGroup labelFor='deux_sh' labelKey='#i18n{project.project.labelDeuxSh}' mandatory=true>
+					<@input type="text" id="deux_sh" name="deux_sh" value="${project.deuxSh!''}"  maxlength=50 tabIndex="2" />
+				</@formGroup>
+				<@formGroup labelFor='trois_md' labelKey='#i18n{project.project.labelTroisMd}' mandatory=true>
+					<@input type="text" id="trois_md" name="trois_md" value="${project.troisMd!''}"  maxlength=255 tabIndex="3" />
+				</@formGroup>
+				<@formGroup labelFor='quatre_lg' labelKey='#i18n{project.project.labelQuatreLg}' mandatory=true>
+					<@input type="text" id="quatre_lg" name="quatre_lg" value="${project.quatreLg!''}"  tabIndex="4" />
+				</@formGroup>
+				<@formGroup labelFor='cinq_mail' labelKey='#i18n{project.project.labelCinqMail}' mandatory=true>
+					<@input type="text" id="cinq_mail" name="cinq_mail" value="${project.cinqMail!''}"  maxlength=255 tabIndex="5" />
+				</@formGroup>
+				<@formGroup labelFor='six_url' labelKey='#i18n{project.project.labelSixUrl}' mandatory=true>
+					<@input type="text" id="six_url" name="six_url" value="${project.sixUrl!''}"  maxlength=255 tabIndex="6" />
+				</@formGroup>
+				<@formGroup labelFor='sept_date' labelKey='#i18n{project.project.labelSeptDate}' mandatory=true>
+					<@input type="text" id="sept_date" name="sept_date" value="${project.septDate!''}"  tabIndex="7" />
+				</@formGroup>
+				<@formGroup labelFor='huit_b' labelKey='#i18n{project.project.labelHuitB}' mandatory=true>
+					<@checkBox id="huit_b" name="huit_b"  value="1" checked=project.huitB!'false' tabIndex='7' />
+				</@formGroup>
+				<@formGroup labelFor='neuf_file' labelKey='#i18n{project.project.labelNeufFile}' >
+	          		<@input type='file' id="neuf_file" name="neuf_file" tabIndex="8" showFileUrl=true fileURL="${project.neufFile.url!}" fileName="${project.neufFile.title!}" value="${project.neufFile.fileKey!\'\'}" />
+				</@formGroup>
+
+				<@formGroup>
+         			<@button name='action_modifyProject' type='submit' tabIndex='9' title='#i18n{portal.util.labelModify}' buttonIcon='plus' />
+          			<@button name='view_manageProjects' type='submit' title='#i18n{portal.util.labelCancel}' buttonIcon='close' color='btn-secondary' cancel=true />
+				</@formGroup>
+		</@tform>
+	</@boxBody>
+</@box>
+
