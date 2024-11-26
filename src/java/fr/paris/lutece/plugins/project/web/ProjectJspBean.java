@@ -36,6 +36,7 @@
 package fr.paris.lutece.plugins.project.web;
 
 import fr.paris.lutece.portal.service.message.AdminMessage;
+
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -61,6 +62,7 @@ import org.apache.commons.lang3.StringUtils;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.FileServiceException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
@@ -100,6 +102,9 @@ public class ProjectJspBean extends AbstractJspBean <Integer, Project>
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_PROJECT = "project.message.confirmRemoveProject";
+    private static final String MESSAGE_ERROR_REMOVE_PROJECT = "project.message.errorRemoveProject";
+	private static final String MESSAGE_ERROR_ID_NOT_FOUND = "project.message.errorIdNotFound";
+	private static final String MESSAGE_ERROR_FILESERVICE = "project.message.errorFileService";
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "project.model.entity.project.attribute.";
@@ -122,6 +127,7 @@ public class ProjectJspBean extends AbstractJspBean <Integer, Project>
     
     // Errors
     private static final String ERROR_RESOURCE_NOT_FOUND = "Resource not found";
+    private static final String ERROR_INVALID_PARAMETER = "Invalid parameter";
     
     // Session variable to store working values
     private Project _project;
@@ -301,13 +307,24 @@ public class ProjectJspBean extends AbstractJspBean <Integer, Project>
     @Action( ACTION_CONFIRM_REMOVE_PROJECT )
     public String getConfirmRemoveProject( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_PROJECT ) );
-        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_PROJECT ) );
-        url.addParameter( PARAMETER_ID_PROJECT, nId );
-
-        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_PROJECT, url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
-
-        return redirect( request, strMessageUrl );
+    	try {
+    		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_PROJECT ) );
+    		
+    		UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_PROJECT ) );
+    		url.addParameter( PARAMETER_ID_PROJECT, nId );
+    		String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_PROJECT, url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+    		return redirect( request, strMessageUrl );
+    		
+    	}//Case id cannot parsed in integer
+    	catch(NumberFormatException e) {
+    		
+    		AppLogService.error( ERROR_INVALID_PARAMETER,e );
+    		
+    	}
+    	
+		UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_PROJECTS ) );
+		String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_REMOVE_PROJECT, url.getUrl(  ), AdminMessage.TYPE_ERROR );
+		return redirect( request, strMessageUrl );
     }
 
     /**
@@ -319,31 +336,47 @@ public class ProjectJspBean extends AbstractJspBean <Integer, Project>
     @Action( ACTION_REMOVE_PROJECT )
     public String doRemoveProject( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_PROJECT ) );
+    	try 
+    	{
+    		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_PROJECT ) );
+    		
+    		Optional<Project> optProject = ProjectHome.findByPrimaryKey( nId );
+    		
+			if (optProject.isPresent()) 
+			{				
+				_project = optProject.get();
+				
+				IFileStoreServiceProvider fileStoreService = ProjectHome.getFileStoreServiceProvider( );
+				if ( _project.getNeufFile( ) != null && StringUtils.isNotEmpty( _project.getNeufFile( ).getFileKey( ) ) ) {
+					
+					fileStoreService.delete( _project.getNeufFile( ).getFileKey( ) );
+					
+					ProjectHome.remove( nId );
+			        addInfo( INFO_PROJECT_REMOVED, getLocale(  ) );
+			       
+				}
+				
+			}else {
+				addError( MESSAGE_ERROR_ID_NOT_FOUND, getLocale(  ) );
+			} 
+    	
+			
+    	}//Case id cannot parsed in integer
+    	catch(NumberFormatException e) 
+    	{
+    		AppLogService.error( ERROR_INVALID_PARAMETER,e );
+    		addError( MESSAGE_ERROR_REMOVE_PROJECT, getLocale(  ) );
+    		
+    	}//Case where the fileService did not respond
+    	catch(FileServiceException e) 
+    	{
+    		AppLogService.error( ERROR_RESOURCE_NOT_FOUND,e );
+    		addError( MESSAGE_ERROR_FILESERVICE, getLocale(  ));
+    	}
+    	
+    	resetListId( );
+        _project=null;
         
-        if ( _project == null || ( _project.getId(  ) != nId ) )
-        {
-            Optional<Project> optProject = ProjectHome.findByPrimaryKey( nId );
-            _project = optProject.orElseThrow( ( ) -> new AppException(ERROR_RESOURCE_NOT_FOUND ) );
-        }
-        IFileStoreServiceProvider fileStoreService = ProjectHome.getFileStoreServiceProvider( );
-	    if ( _project.getNeufFile( ) != null && StringUtils.isNotEmpty( _project.getNeufFile( ).getFileKey( ) ) )
-	    {
-	    	try
-	        {
-        		fileStoreService.delete( _project.getNeufFile( ).getFileKey( ) );
-        	}
-            catch (Exception e) 
-            {
-            	AppLogService.error( e );
-            	throw new AppException(e.getMessage(), e);
-            }
-        }
-        
-        ProjectHome.remove( nId );
-        addInfo( INFO_PROJECT_REMOVED, getLocale(  ) );
-        resetListId( );
-
         return redirectView( request, VIEW_MANAGE_PROJECTS );
     }
 

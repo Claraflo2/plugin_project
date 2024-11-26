@@ -7,37 +7,37 @@
 	</@boxHeader>
 	<@boxBody>    
     <@messages infos=infos />
+    <@messages errors=errors />
     <@paginationAdmin paginator=paginator combo=1 />
     <div class="clearfix"></div>
     
     <@offcanvas id='search_project' title='Rechercher' position='end' btnTitle='Rechercher' btnIcon='search me-1'>
     <@tform id='project_search_form' name='project_search_form' class='border-bottom pb-3' method='get' action='jsp/admin/plugins/project/ManageProjects.jsp' >
-		<@messages errors=errors />
     		
-	    			<@formGroup labelFor='filter_un_entier' labelKey='#i18n{project.manage_projects.columnUnEntier}'>
-				    		<@input type='number' id='filter_un_entier' name='filter_un_entier' placeHolder='#i18n{project.manage_projects.columnUnEntier}' value=mapFilterCriteria["un_entier"]!'' tabIndex='1' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_deux_sh' labelKey='#i18n{project.manage_projects.columnDeuxSh}'>
-				    		<@input type='text' id='filter_deux_sh' name='filter_deux_sh'  maxlength=50  placeHolder='#i18n{project.manage_projects.columnDeuxSh}' value=mapFilterCriteria["deux_sh"]!'' tabIndex='2' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_trois_md' labelKey='#i18n{project.manage_projects.columnTroisMd}'>
-				    		<@input type='text' id='filter_trois_md' name='filter_trois_md'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnTroisMd}' value=mapFilterCriteria["trois_md"]!'' tabIndex='3' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_quatre_lg' labelKey='#i18n{project.manage_projects.columnQuatreLg}'>
-				    		<@input type='text' id='filter_quatre_lg' name='filter_quatre_lg'   placeHolder='#i18n{project.manage_projects.columnQuatreLg}' value=mapFilterCriteria["quatre_lg"]!'' tabIndex='4' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_cinq_mail' labelKey='#i18n{project.manage_projects.columnCinqMail}'>
-				    		<@input type='text' id='filter_cinq_mail' name='filter_cinq_mail'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnCinqMail}' value=mapFilterCriteria["cinq_mail"]!'' tabIndex='5' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_six_url' labelKey='#i18n{project.manage_projects.columnSixUrl}'>
-				    		<@input type='text' id='filter_six_url' name='filter_six_url'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnSixUrl}' value=mapFilterCriteria["six_url"]!'' tabIndex='6' />
-				    </@formGroup>
-	    			<@formGroup labelFor='filter_sept_date' labelKey='#i18n{project.manage_projects.columnSeptDate}'>
-	          				<@input type='date' id='filter_sept_date' name='filter_sept_date' placeHolder='#i18n{project.manage_projects.columnSeptDate}' tabIndex='7' />
-				    </@formGroup>
-					<@formGroup labelFor='filter_huit_b' >										
-						<@checkBox id='filter_huit_b' name='filter_huit_b' value='1' labelKey='#i18n{project.manage_projects.columnHuitB}' tabIndex='8' />
-			    	</@formGroup>
+   			<@formGroup labelFor='filter_un_entier' labelKey='#i18n{project.manage_projects.columnUnEntier}'>
+		    		<@input type='number' id='filter_un_entier' name='filter_un_entier' placeHolder='#i18n{project.manage_projects.columnUnEntier}' value=mapFilterCriteria["un_entier"]!'' tabIndex='1' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_deux_sh' labelKey='#i18n{project.manage_projects.columnDeuxSh}'>
+		    		<@input type='text' id='filter_deux_sh' name='filter_deux_sh'  maxlength=50  placeHolder='#i18n{project.manage_projects.columnDeuxSh}' value=mapFilterCriteria["deux_sh"]!'' tabIndex='2' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_trois_md' labelKey='#i18n{project.manage_projects.columnTroisMd}'>
+		    		<@input type='text' id='filter_trois_md' name='filter_trois_md'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnTroisMd}' value=mapFilterCriteria["trois_md"]!'' tabIndex='3' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_quatre_lg' labelKey='#i18n{project.manage_projects.columnQuatreLg}'>
+		    		<@input type='text' id='filter_quatre_lg' name='filter_quatre_lg'   placeHolder='#i18n{project.manage_projects.columnQuatreLg}' value=mapFilterCriteria["quatre_lg"]!'' tabIndex='4' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_cinq_mail' labelKey='#i18n{project.manage_projects.columnCinqMail}'>
+		    		<@input type='text' id='filter_cinq_mail' name='filter_cinq_mail'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnCinqMail}' value=mapFilterCriteria["cinq_mail"]!'' tabIndex='5' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_six_url' labelKey='#i18n{project.manage_projects.columnSixUrl}'>
+		    		<@input type='text' id='filter_six_url' name='filter_six_url'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnSixUrl}' value=mapFilterCriteria["six_url"]!'' tabIndex='6' />
+		    </@formGroup>
+   			<@formGroup labelFor='filter_sept_date' labelKey='#i18n{project.manage_projects.columnSeptDate}'>
+         				<@input type='date' id='filter_sept_date' name='filter_sept_date' placeHolder='#i18n{project.manage_projects.columnSeptDate}' tabIndex='7' />
+		    </@formGroup>
+			<@formGroup labelFor='filter_huit_b' >										
+				<@checkBox id='filter_huit_b' name='filter_huit_b' value='1' labelKey='#i18n{project.manage_projects.columnHuitB}' tabIndex='8' />
+	    	</@formGroup>
 			
 		<@button type='submit' title='Rechercher' buttonIcon='search'/>							
     </@tform>
