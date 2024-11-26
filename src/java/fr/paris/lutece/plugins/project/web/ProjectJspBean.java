@@ -48,20 +48,24 @@ import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.html.AbstractPaginator;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.file.FileService;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang3.StringUtils;
 import fr.paris.lutece.portal.business.file.File;
+
 import fr.paris.lutece.plugins.project.business.Project;
 import fr.paris.lutece.plugins.project.business.ProjectHome;
 
@@ -69,7 +73,7 @@ import fr.paris.lutece.plugins.project.business.ProjectHome;
  * This class provides the user interface to manage Project features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageProjects.jsp", controllerPath = "jsp/admin/plugins/project/", right = "PROJECT_MANAGEMENT" )
-public class ProjectJspBean extends AbstractPaginatorJspBean <Integer, Project>
+public class ProjectJspBean extends AbstractJspBean <Integer, Project>
 {
 
 	// Rights
@@ -122,6 +126,8 @@ public class ProjectJspBean extends AbstractPaginatorJspBean <Integer, Project>
     // Session variable to store working values
     private Project _project;
     private List<Integer> _listIdProjects;
+    private HashMap<String,String> _mapFilterCriteria = new HashMap<>();
+    private String _optionOrderBy;
     
     /**
      * Build the Manage View
@@ -133,14 +139,37 @@ public class ProjectJspBean extends AbstractPaginatorJspBean <Integer, Project>
     {
         _project = null;
         
-        if ( request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX) == null || _listIdProjects.isEmpty( ) )
+        // new search only if in pagination mode
+        if ( request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX) == null )
         {
-        	_listIdProjects = ProjectHome.getIdProjectsList(  );
+        	// if sorting request : new search with the existing filter criteria, ordered 
+        	// example of order by parameter : orderby=name
+        	if ( StringUtils.isNotBlank( (String)request.getParameter(PARAMETER_SEARCH_ORDER_BY) ) )
+        	{
+        		
+        		String strOrderByColumn =  (String)request.getParameter(PARAMETER_SEARCH_ORDER_BY);
+        		String strSortMode = getSortMode(); 
+        		
+        		_listIdProjects = ProjectHome.getIdProjectsList( _mapFilterCriteria, strOrderByColumn, strSortMode );
+               	
+	       	}
+	       	else
+	       	{
+	       		// reload the filter criteria and search
+	       		_mapFilterCriteria = (HashMap<String, String>) getFilterCriteriaFromRequest( request );
+	       		_listIdProjects = ProjectHome.getIdProjectsList( _mapFilterCriteria, null ,null);
+	       	}
+        	
+        	//set CurrentPageIndex of Paginator to null in aim of displays the first page of results
+        	resetCurrentPageIndexOfPaginator();
         }
-        
-        Map<String, Object> model = getPaginatedListModel( request, MARK_PROJECT_LIST, _listIdProjects, JSP_MANAGE_PROJECTS );
-
+       	
+       	Map<String, Object> model = getPaginatedListModel( request, MARK_PROJECT_LIST, _listIdProjects, JSP_MANAGE_PROJECTS );
+             
+        addSearchParameters(model,_mapFilterCriteria); //allow the persistence of search values in inputs search bar inputs
+                     
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_PROJECTS, TEMPLATE_MANAGE_PROJECTS, model );
+
     }
 
 	/**

@@ -57,6 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.FileServiceException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import org.apache.commons.fileupload.FileItem;

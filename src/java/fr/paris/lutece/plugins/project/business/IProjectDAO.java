@@ -37,6 +37,7 @@ package fr.paris.lutece.plugins.project.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -83,12 +84,15 @@ public interface IProjectDAO
      */
     List<Project> selectProjectsList( Plugin plugin );
     
-    /**
-     * Load the id of all the project objects and returns them as a list
+       /**
+     * Load the id of all the types objects and returns them as a list
      * @param plugin the Plugin
-     * @return The list which contains the id of all the project objects
+     * @param mapFilterCriteria contains search bar names/values inputs 
+     * @param strColumnToOrder contains the column name to use for orderBy statement in case of sorting request (must be null)
+     * @param strSortMode contains the sortMode in case of sorting request : ASC or DESC (must be null)
+     * @return The list which contains the id of all the project objects fitting with the seach criteria.
      */
-    List<Integer> selectIdProjectsList( Plugin plugin );
+    List<Integer> selectIdProjectsList( Plugin plugin, Map <String,String> mapFilterCriteria, String strColumnToOrder, String strSortMode );
     
     /**
      * Load the data of all the project objects and returns them as a referenceList

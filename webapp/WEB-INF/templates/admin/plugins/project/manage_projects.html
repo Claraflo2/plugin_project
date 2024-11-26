@@ -1,6 +1,6 @@
 
 <@box>
-	<@boxHeader title='#i18n{project.manage_project.title}' boxTools=true>
+	<@boxHeader title='#i18n{project.manage_projects.title}' boxTools=true>
 		<@tform class='form-inline pull-right' name='manage_project' action='jsp/admin/plugins/project/ManageProjects.jsp'>
 			<@button type='submit' name='view_createProject' buttonIcon='plus' title='#i18n{project.manage_projects.buttonAdd}' />
 		</@tform>
@@ -9,45 +9,90 @@
     <@messages infos=infos />
     <@paginationAdmin paginator=paginator combo=1 />
     <div class="clearfix"></div>
+    
+    <@offcanvas id='search_project' title='Rechercher' position='end' btnTitle='Rechercher' btnIcon='search me-1'>
+    <@tform id='project_search_form' name='project_search_form' class='border-bottom pb-3' method='get' action='jsp/admin/plugins/project/ManageProjects.jsp' >
+		<@messages errors=errors />
+    		
+	    			<@formGroup labelFor='filter_un_entier' labelKey='#i18n{project.manage_projects.columnUnEntier}'>
+				    		<@input type='number' id='filter_un_entier' name='filter_un_entier' placeHolder='#i18n{project.manage_projects.columnUnEntier}' value=mapFilterCriteria["un_entier"]!'' tabIndex='1' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_deux_sh' labelKey='#i18n{project.manage_projects.columnDeuxSh}'>
+				    		<@input type='text' id='filter_deux_sh' name='filter_deux_sh'  maxlength=50  placeHolder='#i18n{project.manage_projects.columnDeuxSh}' value=mapFilterCriteria["deux_sh"]!'' tabIndex='2' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_trois_md' labelKey='#i18n{project.manage_projects.columnTroisMd}'>
+				    		<@input type='text' id='filter_trois_md' name='filter_trois_md'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnTroisMd}' value=mapFilterCriteria["trois_md"]!'' tabIndex='3' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_quatre_lg' labelKey='#i18n{project.manage_projects.columnQuatreLg}'>
+				    		<@input type='text' id='filter_quatre_lg' name='filter_quatre_lg'   placeHolder='#i18n{project.manage_projects.columnQuatreLg}' value=mapFilterCriteria["quatre_lg"]!'' tabIndex='4' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_cinq_mail' labelKey='#i18n{project.manage_projects.columnCinqMail}'>
+				    		<@input type='text' id='filter_cinq_mail' name='filter_cinq_mail'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnCinqMail}' value=mapFilterCriteria["cinq_mail"]!'' tabIndex='5' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_six_url' labelKey='#i18n{project.manage_projects.columnSixUrl}'>
+				    		<@input type='text' id='filter_six_url' name='filter_six_url'  maxlength=255  placeHolder='#i18n{project.manage_projects.columnSixUrl}' value=mapFilterCriteria["six_url"]!'' tabIndex='6' />
+				    </@formGroup>
+	    			<@formGroup labelFor='filter_sept_date' labelKey='#i18n{project.manage_projects.columnSeptDate}'>
+	          				<@input type='date' id='filter_sept_date' name='filter_sept_date' placeHolder='#i18n{project.manage_projects.columnSeptDate}' tabIndex='7' />
+				    </@formGroup>
+					<@formGroup labelFor='filter_huit_b' >										
+						<@checkBox id='filter_huit_b' name='filter_huit_b' value='1' labelKey='#i18n{project.manage_projects.columnHuitB}' tabIndex='8' />
+			    	</@formGroup>
+			
+		<@button type='submit' title='Rechercher' buttonIcon='search'/>							
+    </@tform>
+    </@offcanvas>
+    
+
+    <#list mapFilterCriteria?keys as key> 
+    	<#if mapFilterCriteria[key]!="">
+	    	<span class="badge bg-primary px-2" > 
+	 			${key} <a href='jsp/admin/plugins/project/ManageProjects.jsp?clean_filter=1<#list mapFilterCriteria?keys as x><#if "${x}"!="${key}">&filter_${x}=${mapFilterCriteria["${x}"]} </#if></#list>' class='icon-block'><i class='fas fa-times-circle' style="color:white" ></i></a>
+			</span>
+		</#if> 
+	</#list>
+
+	
+    <div class="clearfix"></div>
     <@table>
         <tr>
-            <th>#i18n{project.manage_projects.columnUnEntier}</th>
-            <th>#i18n{project.manage_projects.columnDeuxSh}</th>
-            <th>#i18n{project.manage_projects.columnTroisMd}</th>
-            <th>#i18n{project.manage_projects.columnQuatreLg}</th>
-            <th>#i18n{project.manage_projects.columnCinqMail}</th>
-            <th>#i18n{project.manage_projects.columnSixUrl}</th>
-            <th>#i18n{project.manage_projects.columnSeptDate}</th>
-            <th>#i18n{project.manage_projects.columnHuitB}</th>
-            <th>#i18n{project.manage_projects.columnNeufFile}</th>
+             <th>#i18n{project.manage_projects.columnUnEntier}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=un_entier'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnDeuxSh}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=deux_sh'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnTroisMd}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=trois_md'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnQuatreLg}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=quatre_lg'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnCinqMail}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=cinq_mail'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnSixUrl}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=six_url'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnSeptDate}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=sept_date'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnHuitB}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=huit_b'><i class='fas fa-sort'></i></a></th>
+             <th>#i18n{project.manage_projects.columnNeufFile}&nbsp;<a href='jsp/admin/plugins/project/ManageProjects.jsp?orderBy=neuf_file'><i class='fas fa-sort'></i></a></th>
             <th>#i18n{portal.util.labelActions}</th>
         </tr>
         <@tableHeadBodySeparator />
         <#list project_list as project >
         <tr>
             <td>
-				${project.unEntier}
+				${project.unEntier!''}
 			</td>
             <td>
-				${project.deuxSh}
+				${project.deuxSh!''}
 			</td>
             <td>
-				${project.troisMd}
+				${project.troisMd!''}
 			</td>
             <td>
-				${project.quatreLg}
+				${project.quatreLg!''}
 			</td>
             <td>
-				${project.cinqMail}
+				${project.cinqMail!''}
 			</td>
             <td>
-				${project.sixUrl}
+				${project.sixUrl!''}
 			</td>
             <td>
-				${project.septDate}
+				${project.septDate!''}
 			</td>
             <td>
-				${project.huitB?c}
+				${project.huitB?c!''}
 			</td>
             <td>
 				<@link href="${project.neufFile.url!}">${project.neufFile.title!}</@link>

@@ -42,13 +42,17 @@ import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import fr.paris.lutece.portal.business.file.File;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class provides Data Access methods for Project objects
  */
-public final class ProjectDAO implements IProjectDAO
+public final class ProjectDAO extends AbstractFilterDao implements IProjectDAO
 {
     // Constants
     private static final String SQL_QUERY_INSERT = "INSERT INTO project_table ( un_entier, deux_sh, trois_md, quatre_lg, cinq_mail, six_url, sept_date, huit_b, neuf_file ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
@@ -60,6 +64,15 @@ public final class ProjectDAO implements IProjectDAO
 
     private static final String SQL_QUERY_SELECTALL_BY_IDS = SQL_QUERY_SELECTALL + " WHERE id_project IN (  ";
 	private static final String SQL_QUERY_SELECT_BY_ID = SQL_QUERY_SELECTALL + " WHERE id_project = ?";
+
+
+	/**
+     * Constructor
+     */
+	public ProjectDAO() {
+
+		initMapSql(Project.class); //Maps with name and type of each databases column associated to the business class attributes 
+	}
 
     /**
      * {@inheritDoc }
@@ -186,11 +199,24 @@ public final class ProjectDAO implements IProjectDAO
      * {@inheritDoc }
      */
     @Override
-    public List<Integer> selectIdProjectsList( Plugin plugin )
+    public List<Integer> selectIdProjectsList( Plugin plugin,  Map <String,String> mapFilterCriteria, String strColumnToOrder, String strSortMode )
     {
         List<Integer> projectList = new ArrayList<>( );
-        try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin ) )
+        
+        String strSelectStatement =  prepareSelectStatement(SQL_QUERY_SELECTALL_ID, mapFilterCriteria, strColumnToOrder, strSortMode);  
+        
+        try( DAOUtil daoUtil = new DAOUtil( strSelectStatement, plugin ) )
         {
+        
+        	int nIndex = 1;
+    	        
+   	        for(Map.Entry<String, String> filter : mapFilterCriteria.entrySet()) {
+   	        	
+   	        	if(StringUtils.isNotBlank(filter.getValue())  && _mapSql.containsKey(filter.getKey())) {
+   	        		daoUtil.setString( nIndex++ , filter.getValue() );
+   	        	}
+   	        }
+    	        
 	        daoUtil.executeQuery(  );
 	
 	        while ( daoUtil.next(  ) )

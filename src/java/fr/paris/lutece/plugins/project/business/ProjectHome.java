@@ -46,6 +46,7 @@ import fr.paris.lutece.portal.business.file.File;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -117,13 +118,16 @@ public final class ProjectHome
         return _dao.selectProjectsList( _plugin );
     }
     
-    /**
-     * Load the id of all the project objects and returns them as a list
+        /**
+     * Load the id of all the types objects and returns them as a list
+     * @param mapFilterCriteria contains search bar names/values inputs 
+     * @param strColumnToOrder contains the column name to use for orderBy statement in case of sorting request (must be null)
+     * @param strSortMode contains the sortMode in case of sorting request : ASC or DESC (must be null)
      * @return the list which contains the id of all the project objects
      */
-    public static List<Integer> getIdProjectsList( )
+    public static List<Integer> getIdProjectsList( Map <String,String> mapFilterCriteria, String strColumnToOrder, String strSortMode )
     {
-        return _dao.selectIdProjectsList( _plugin );
+        return _dao.selectIdProjectsList( _plugin,mapFilterCriteria,strColumnToOrder,strSortMode );
     }
     
     /**

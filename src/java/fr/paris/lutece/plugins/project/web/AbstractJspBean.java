@@ -40,12 +40,15 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 
-public abstract class AbstractPaginatorJspBean <S, T> extends MVCAdminJspBean
+public abstract class AbstractJspBean <S, T> extends MVCAdminJspBean
 {
     
     // Properties
@@ -54,14 +57,22 @@ public abstract class AbstractPaginatorJspBean <S, T> extends MVCAdminJspBean
     
     // Parameters
     private static final String PARAMETER_PAGE_INDEX = "page_index";
+    protected static final String PARAMETER_SEARCH_ORDER_BY = "orderBy";
+    private static final String  PARAMETER_MAP_FILTER_CRITERIA = "mapFilterCriteria";  
     
     // Markers
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
 
+    //Search
+    private static final String FILTER_ATTRIBUTES_PREFIX = "filter_";
+    private static final String SORT_ATTRIBUTES_ASC = " ASC ";
+    private static final String SORT_ATTRIBUTES_DESC = " DESC ";
+    
     //Variables
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
+    private String _strSortMode="";
 
     /**
      * Return a model that contains the list and paginator infos
@@ -106,4 +117,58 @@ public abstract class AbstractPaginatorJspBean <S, T> extends MVCAdminJspBean
      abstract  List<T> getItemsFromIds ( List<S> listIds ) ;
      
      int getPluginDefaultNumberOfItemPerPage( ) { return PROPERTY_DEFAULT_ITEM_PER_PAGE; } ;
+     
+      /**
+      * set _strCurrentPageIndex to null
+      */
+     protected void resetCurrentPageIndexOfPaginator() {
+    	 _strCurrentPageIndex=null;
+     }
+     
+     /**
+      * the name of the filter criteria sent in the request must start with "filter_"
+      * @param request 
+      * @return mapFilterCriteria : contains all names/values filter criteria
+      */
+     protected Map<String,String> getFilterCriteriaFromRequest( HttpServletRequest request ) 
+     {	
+    	   	
+     	Enumeration enumeration = request.getParameterNames( );
+     	Map<String, String> mapFilterCriteria = new HashMap<>( );
+         
+     	while ( enumeration.hasMoreElements( ) )
+		{
+			String strParameterName = (String) enumeration.nextElement();
+			
+			//All parameters from search bar start with the same prefix "filter_" 
+			if ( strParameterName.startsWith( FILTER_ATTRIBUTES_PREFIX ) && !StringUtils.isBlank( request.getParameter( strParameterName ) ) )
+			{
+				mapFilterCriteria.put( strParameterName.substring(FILTER_ATTRIBUTES_PREFIX.length()), request.getParameter( strParameterName ) );
+			}
+		}
+        return mapFilterCriteria;            	
+     }  
+     
+     /**
+      *  add persistent values of the search inputs in model
+      *  @param model : map containing name parameters of http request with values associated.
+      *  @param mapFilterCriteria : contains search bar names/values inputs 
+      */
+     protected void addSearchParameters( Map<String, Object>  model, Map<String,String> mapFilterCriteria) {
+     	
+    	 //Persistent values of search inputs
+    	 model.put(PARAMETER_MAP_FILTER_CRITERIA, mapFilterCriteria); 
+ 	}
+
+     /**
+      *  get _strSortMode
+      *  At each sort request, the sort mode switches (ASC to DESC and vice versa)
+      */
+     protected String getSortMode() {
+    	 	 
+    	 _strSortMode = (_strSortMode==SORT_ATTRIBUTES_ASC)?SORT_ATTRIBUTES_DESC:SORT_ATTRIBUTES_ASC;
+
+    	 return _strSortMode;
+    	 
+     }
 }
